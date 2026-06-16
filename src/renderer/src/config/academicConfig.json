@@ -25,8 +25,9 @@
     { "name": "Computer Science and Engineering", "acronym": "CSE" },
     { "name": "Electronics and Communication Engineering", "acronym": "ECE" },
     { "name": "Mechanical Engineering", "acronym": "ME" },
+    { "name": "Smart Manufacturing", "acronym": "SM" },
     { "name": "Design", "acronym": "DES" },
-    { "name": "Smart Manufacturing", "acronym": "SM" }
+    { "name": "Mechatronics", "acronym": "MT" }
   ],
   "semesters": [
     { "no": 1, "type": "Odd Semester", "label": "Semester 1" },

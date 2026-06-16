@@ -76,7 +76,7 @@ The app reads metadata from the file name. Use either format:
 \* When the academic year isn't in the name, it's derived from the batch year + semester.
 
 Programme codes: `BTech`, `BDes`, `MTech`, `MTechAIML`, `MTechDS`, `MTechVLSI`, `MTechPC`, `MTechCADCAM`, `MDes`, `PhD`, …
-Discipline codes and any new disciplines live in [`src/renderer/src/config/academicConfig.json`](src/renderer/src/config/academicConfig.json).
+Discipline codes (from the Fusion database): `CSE`, `ECE`, `ME`, `SM`, `DES`, `MT`. Matching ignores case and punctuation (so `Des.`, `des`, `DES` are all Design). Edit/extend the list in [`src/renderer/src/config/academicConfig.json`](src/renderer/src/config/academicConfig.json).
 
 ---
 
