@@ -83,6 +83,13 @@ export function parseApprovalSheet(arrayBuffer) {
   };
   const cpiCol = colOf("CPI");
   const finalSpiCol = colOf("SPI");
+  const suCol = colOf("SU"); // Semester Units (credits earned this semester)
+  const tuCol = colOf("TU"); // Total Units = cumulative credits (drives graduation logic)
+
+  const numOrNull = (v) => {
+    const n = parseFloat(norm(v));
+    return Number.isFinite(n) ? n : null;
+  };
 
   // Data rows: row index 4 onward.
   const students = [];
@@ -112,6 +119,8 @@ export function parseApprovalSheet(arrayBuffer) {
       courses: studentCourses,
       spi: finalSpiCol >= 0 ? norm(row[finalSpiCol]) : "",
       cpi: cpiCol >= 0 ? norm(row[cpiCol]) : "",
+      su: suCol >= 0 ? numOrNull(row[suCol]) : null,
+      tu: tuCol >= 0 ? numOrNull(row[tuCol]) : null, // cumulative credits
     });
   }
 

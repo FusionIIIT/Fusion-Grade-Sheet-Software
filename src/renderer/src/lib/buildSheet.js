@@ -6,7 +6,7 @@ import { programmeFullName } from "./mappers.js";
  * @param student   parsed row from parseApprovalSheet: { rollNo, name, courses[], spi, cpi }
  * @param metadata  { academicYear, programme, disciplineName, semester: {no, type, label} }
  */
-export function buildStudentSheetHtml(student, metadata) {
+export function buildStudentSheetHtml(student, metadata, semesterHistory = []) {
   const { academicYear, programme, disciplineName, semester } = metadata;
 
   const studentInfo = {
@@ -26,7 +26,9 @@ export function buildStudentSheetHtml(student, metadata) {
     parseFloat(student.spi) || 0,
     parseFloat(student.cpi) || 0,
     semesterLabel,
-    [], // v1: single-semester sheet → simple Result/SPI/CPI line (no history grid)
+    // Single sheet → [] → simple Result/SPI/CPI line.
+    // Multiple sheets → per-semester history → portal-faithful grid + graduation line.
+    Array.isArray(semesterHistory) ? semesterHistory : [],
     semester?.no || 1,
     selectedIsSummer
   );
@@ -42,10 +44,12 @@ export function safeFileName(rollNo) {
 // offscreen window per student. The per-student CSS is identical, so we take the
 // <style> from the first sheet and concatenate each <body> inner inside a
 // page-breaking wrapper.
-export function buildCombinedSheetHtml(students, metadata) {
+export function buildCombinedSheetHtml(students, metadata, historyByRoll = {}) {
   if (!students.length) return "<!doctype html><html><body></body></html>";
 
-  const first = buildStudentSheetHtml(students[0], metadata);
+  const histOf = (s) => historyByRoll[s.rollNo] || [];
+
+  const first = buildStudentSheetHtml(students[0], metadata, histOf(students[0]));
   const styleMatch = first.match(/<style>([\s\S]*?)<\/style>/i);
   const css = styleMatch ? styleMatch[1] : "";
 
@@ -55,7 +59,7 @@ export function buildCombinedSheetHtml(students, metadata) {
   };
 
   const pages = students
-    .map((s) => `<div class="gs-page">${bodyInner(buildStudentSheetHtml(s, metadata))}</div>`)
+    .map((s) => `<div class="gs-page">${bodyInner(buildStudentSheetHtml(s, metadata, histOf(s)))}</div>`)
     .join("\n");
 
   return `<!DOCTYPE html>

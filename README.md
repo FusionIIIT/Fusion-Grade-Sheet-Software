@@ -22,6 +22,7 @@ The Fusion ERP portal lets you download an **Approval Sheet** (`.xlsx`/`.csv`) f
 - 🧠 **Zero typing** — Programme, Discipline, Semester and Academic Year are read automatically from the file name.
 - 🔎 **Search** any student by roll number or name.
 - 🖨️ **Print**, **Download** a single sheet, or **Export All** into one combined PDF in seconds.
+- 🎓 **Graduation grid** — upload all of a batch's semester sheets at once and the final-semester sheet shows the full semester-wise SPI/CPI grid + "successfully completed the programme" (driven by cumulative credits from the **TU** column, threshold 148 for Bachelor's / 48 for PG).
 - 🔌 **100% offline** — your student data never leaves the machine.
 
 ---
@@ -58,7 +59,9 @@ Get the latest installer for your OS from the **[Releases page](https://github.c
 ## How to use
 
 1. Open the app.
-2. **Upload** the approval sheet. The app reads the details from the file name and shows them as confirmation chips.
+2. **Upload** the approval sheet(s). The app reads the details from the file name and shows them as confirmation chips.
+   - **One sheet** → grade sheets for that semester (simple Result · SPI · CPI line).
+   - **All of a batch's semester sheets together** → the latest semester's sheets render the full **semester-wise SPI/CPI grid** with the graduation line (needs every semester present for a complete grid; missing semesters show "–").
 3. Use **Search** to find a student, then **Preview / Print / Download** — or hit **Export All** for the whole batch.
 
 ### 📌 File-name convention

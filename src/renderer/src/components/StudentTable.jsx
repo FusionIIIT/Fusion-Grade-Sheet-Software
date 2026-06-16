@@ -6,7 +6,8 @@ import { buildStudentSheetHtml, buildCombinedSheetHtml, safeFileName } from "../
 import { computeSpi } from "../lib/gradeData";
 import PreviewModal from "./PreviewModal";
 
-export default function StudentTable({ parsed, metadata }) {
+export default function StudentTable({ parsed, metadata, historyByRoll = {} }) {
+  const histOf = (s) => historyByRoll[s.rollNo] || [];
   const [busy, setBusy] = useState({});
   const [exporting, setExporting] = useState(false);
   const [preview, setPreview] = useState({ open: false, html: "", title: "" });
@@ -29,14 +30,14 @@ export default function StudentTable({ parsed, metadata }) {
   const setRowBusy = (roll, v) => setBusy((p) => ({ ...p, [roll]: v }));
 
   const handlePreview = (student) => {
-    const html = buildStudentSheetHtml(student, metadata);
+    const html = buildStudentSheetHtml(student, metadata, histOf(student));
     setPreview({ open: true, html, title: `Preview — ${student.rollNo}` });
   };
 
   const handleDownload = async (student) => {
     setRowBusy(student.rollNo, "download");
     try {
-      const html = buildStudentSheetHtml(student, metadata);
+      const html = buildStudentSheetHtml(student, metadata, histOf(student));
       const res = await window.api.savePdf(html, safeFileName(student.rollNo));
       if (res.ok)
         showNotification({ color: "green", title: "Saved", message: res.path });
@@ -50,7 +51,7 @@ export default function StudentTable({ parsed, metadata }) {
   const handlePrint = async (student) => {
     setRowBusy(student.rollNo, "print");
     try {
-      const html = buildStudentSheetHtml(student, metadata);
+      const html = buildStudentSheetHtml(student, metadata, histOf(student));
       const res = await window.api.printPdf(html);
       if (!res.ok && res.reason)
         showNotification({ color: "yellow", title: "Print", message: res.reason });
@@ -65,7 +66,7 @@ export default function StudentTable({ parsed, metadata }) {
     setExporting(true);
     try {
       // One combined document → a single fast render pass in the main process.
-      const combinedHtml = buildCombinedSheetHtml(students, metadata);
+      const combinedHtml = buildCombinedSheetHtml(students, metadata, historyByRoll);
       const name = `grade_sheets_${metadata.disciplineAcronym || "all"}_sem${metadata.semester.no}.pdf`;
       const res = await window.api.exportAll(combinedHtml, students.length, name);
       if (res.ok)
