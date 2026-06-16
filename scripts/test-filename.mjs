@@ -14,6 +14,10 @@ const cases = [
   ["MTechAIML_CSE_Sem1_2025-26.xlsx", { programme: "M.Tech AI & ML", disciplineAcronym: "CSE", semNo: 1, year: "2025-26", type: "Odd Semester" }],
   ["PhD_ECE_Sem2_2024-25.xlsx", { programme: "PhD", disciplineAcronym: "ECE", semNo: 2, year: "2024-25", type: "Even Semester" }],
   ["BDes_DES_Sem4_2023-24.csv", { programme: "B.Des", disciplineAcronym: "DES", semNo: 4, year: "2023-24", type: "Even Semester" }],
+  // Discipline token with punctuation ("Des.") must still match config DES → Design.
+  ["BDes_Des._Sem1_2025-26.xlsx", { programme: "B.Des", disciplineAcronym: "DES", semNo: 1, year: "2025-26", type: "Odd Semester" }],
+  // Unknown discipline code not in config → extracted positionally, still works.
+  ["MTech_XYZ_Sem2_2024-25.xlsx", { programme: "M.Tech", disciplineAcronym: "XYZ", semNo: 2, year: "2024-25", type: "Even Semester" }],
   // Portal native download name (no explicit academic year → derived from batch year + sem).
   ["B.Tech - Computer Science and Engineering CSE 2025_Semester 1.xlsx", { programme: "B.Tech", disciplineAcronym: "CSE", semNo: 1, year: "2025-26", type: "Odd Semester" }],
   ["M.Tech AI & ML - Electronics and Communication Engineering ECE 2025_Semester 1.xlsx", { programme: "M.Tech AI & ML", disciplineAcronym: "ECE", semNo: 1, year: "2025-26", type: "Odd Semester" }],

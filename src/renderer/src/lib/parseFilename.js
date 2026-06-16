@@ -53,15 +53,30 @@ function matchProgramme(progPart) {
 
 function matchDiscipline(base, disciplines) {
   const tokens = base.split(/[_\s\-]+/).map((t) => t.trim()).filter(Boolean);
-  // 1) exact acronym token match (e.g. "CSE", "ME")
+  const normTokens = tokens.map(alnum); // punctuation-stripped, e.g. "Des." -> "DES"
+
+  // 1) acronym token match, ignoring punctuation/case ("Des." == "DES").
   for (const d of disciplines) {
-    const ac = (d.acronym || "").toUpperCase();
-    if (ac && tokens.some((t) => t.toUpperCase() === ac)) return d;
+    const ac = alnum(d.acronym);
+    if (ac && normTokens.includes(ac)) return d;
   }
-  // 2) full-name substring match (native format has the full discipline name)
-  const upper = base.toUpperCase();
+  // 2) full discipline-name match (native format embeds the full name).
+  const baseAlnum = alnum(base);
   for (const d of disciplines) {
-    if (d.name && upper.includes(d.name.toUpperCase())) return d;
+    if (d.name && baseAlnum.includes(alnum(d.name))) return d;
+  }
+  // 3) Positional fallback for the compact convention
+  //    <Programme>_<Discipline>_Sem<N>_<Year> : the discipline is the token
+  //    immediately before the Sem/Summer token. Works for ANY code, even ones
+  //    not yet listed in academicConfig.json.
+  const semIdx = tokens.findIndex((t) => /^(sem|summer|s\d)/i.test(t));
+  if (semIdx >= 2) {
+    const tok = tokens[semIdx - 1];
+    const ac = alnum(tok);
+    // must look like a discipline code (has a letter, not a year)
+    if (ac && /[A-Z]/.test(ac) && !/^\d{4}$/.test(tok)) {
+      return { name: ac, acronym: ac, _unknown: true };
+    }
   }
   return null;
 }
