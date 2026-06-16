@@ -21,13 +21,17 @@
     "M.Des",
     "PhD"
   ],
+  "_disciplines_comment": "Synced 1:1 with the live Fusion DB table programme_curriculum_discipline (name + acronym exactly as stored, including 'Des.' for Design).",
   "disciplines": [
     { "name": "Computer Science and Engineering", "acronym": "CSE" },
     { "name": "Electronics and Communication Engineering", "acronym": "ECE" },
     { "name": "Mechanical Engineering", "acronym": "ME" },
     { "name": "Smart Manufacturing", "acronym": "SM" },
-    { "name": "Design", "acronym": "DES" },
-    { "name": "Mechatronics", "acronym": "MT" }
+    { "name": "Mechatronics", "acronym": "MT" },
+    { "name": "Design", "acronym": "Des." },
+    { "name": "Humanities - English", "acronym": "English" },
+    { "name": "Natural Sciences-Mathematics", "acronym": "Maths" },
+    { "name": "Natural Sciences-Physics", "acronym": "Physics" }
   ],
   "semesters": [
     { "no": 1, "type": "Odd Semester", "label": "Semester 1" },
