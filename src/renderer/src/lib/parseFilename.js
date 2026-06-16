@@ -1,0 +1,131 @@
+// ─────────────────────────────────────────────────────────────────────────────
+//  Extract Programme / Discipline / Semester / Academic Year from the file NAME.
+//
+//  Supported formats (case-insensitive, separators flexible):
+//   • Compact convention:
+//        BTech_CSE_Sem3_2024-25.xlsx
+//        MTechAIML_CSE_Sem1_2025-26.xlsx
+//        PhD_ECE_Sem2_2024-25.xlsx
+//   • Portal native download name (batchLabel_semesterLabel):
+//        "B.Tech - Computer Science and Engineering CSE 2025_Semester 1.xlsx"
+//        "M.Tech AI & ML - ... ECE 2025_Semester 1.xlsx"
+//
+//  When the academic year is not given as YYYY-YY (native format only has the
+//  batch admission year), it is derived: startYear = batchYear + floor((sem-1)/2).
+// ─────────────────────────────────────────────────────────────────────────────
+
+// Programme token (normalized to A-Z0-9, uppercase) → canonical programme name.
+// Ordered longest-first so M.Tech variants win over plain "MTECH".
+const PROGRAMME_KEYS = [
+  ["MTECHAIML", "M.Tech AI & ML"],
+  ["MTECHARTIFICIALINTELLIGENCE", "M.Tech AI & ML"],
+  ["MTECHDATASCIENCE", "M.Tech Data Science"],
+  ["MTECHDS", "M.Tech Data Science"],
+  ["MTECHCOMMUNICATIONANDSIGNALPROCESSING", "M.Tech Communication and Signal Processing"],
+  ["MTECHCSP", "M.Tech Communication and Signal Processing"],
+  ["MTECHNANOELECTRONICSANDVLSIDESIGN", "M.Tech Nanoelectronics and VLSI Design"],
+  ["MTECHVLSI", "M.Tech Nanoelectronics and VLSI Design"],
+  ["MTECHNANO", "M.Tech Nanoelectronics and VLSI Design"],
+  ["MTECHPOWERCONTROL", "M.Tech Power & Control"],
+  ["MTECHPOWERANDCONTROL", "M.Tech Power & Control"],
+  ["MTECHPC", "M.Tech Power & Control"],
+  ["MTECHMANUFACTURINGANDAUTOMATION", "M.Tech Manufacturing and Automation"],
+  ["MTECHMA", "M.Tech Manufacturing and Automation"],
+  ["MTECHCADCAM", "M.Tech CAD/CAM"],
+  ["MTECHDESIGN", "M.Tech Design"],
+  ["MTECH", "M.Tech"],
+  ["MDES", "M.Des"],
+  ["BTECH", "B.Tech"],
+  ["BDES", "B.Des"],
+  ["PHD", "PhD"],
+];
+
+const stripExt = (n) => String(n || "").replace(/\.[^.]+$/, "");
+const alnum = (s) => String(s || "").toUpperCase().replace(/[^A-Z0-9]/g, "");
+
+function matchProgramme(progPart) {
+  const norm = alnum(progPart);
+  for (const [key, name] of PROGRAMME_KEYS) {
+    if (norm === key || norm.startsWith(key)) return name;
+  }
+  return null;
+}
+
+function matchDiscipline(base, disciplines) {
+  const tokens = base.split(/[_\s\-]+/).map((t) => t.trim()).filter(Boolean);
+  // 1) exact acronym token match (e.g. "CSE", "ME")
+  for (const d of disciplines) {
+    const ac = (d.acronym || "").toUpperCase();
+    if (ac && tokens.some((t) => t.toUpperCase() === ac)) return d;
+  }
+  // 2) full-name substring match (native format has the full discipline name)
+  const upper = base.toUpperCase();
+  for (const d of disciplines) {
+    if (d.name && upper.includes(d.name.toUpperCase())) return d;
+  }
+  return null;
+}
+
+function deriveAcademicYear(batchYear, semNo) {
+  const start = batchYear + Math.floor((Math.max(1, semNo) - 1) / 2);
+  const end = String((start + 1) % 100).padStart(2, "0");
+  return `${start}-${end}`;
+}
+
+/**
+ * @param filename     the uploaded file's name
+ * @param disciplines  config.disciplines: [{ name, acronym }]
+ * @returns { ok, programme, disciplineName, disciplineAcronym, semester:{no,type,label}, academicYear, missing[] }
+ */
+export function parseFilename(filename, disciplines = []) {
+  const base = stripExt(filename);
+  const missing = [];
+
+  // ── Programme ──
+  const progPart = base.includes(" - ") ? base.split(" - ")[0] : base.split(/[_\s]/)[0];
+  const programme = matchProgramme(progPart);
+  if (!programme) missing.push("Programme");
+
+  // ── Discipline ──
+  const disc = matchDiscipline(base, disciplines);
+  if (!disc) missing.push("Discipline");
+
+  // ── Semester ──
+  const isSummer = /summer/i.test(base);
+  let semNo = null;
+  const semMatch =
+    base.match(/sem(?:ester)?[\s_]*?(\d+)/i) || base.match(/(?:^|[_\s-])S(\d+)(?:$|[_\s-])/i);
+  if (semMatch) semNo = parseInt(semMatch[1], 10);
+  if (!semNo) missing.push("Semester");
+
+  // ── Academic Year ──
+  let academicYear = null;
+  const explicit = base.match(/(\d{4})\s*-\s*(\d{2,4})/);
+  if (explicit) {
+    const start = explicit[1];
+    const end2 = explicit[2].length === 4 ? explicit[2].slice(2) : explicit[2].padStart(2, "0");
+    academicYear = `${start}-${end2}`;
+  } else {
+    // Fall back to a standalone batch year (not part of a range) and derive.
+    const yearTok = base.match(/(?:^|[_\s-])(20\d{2})(?:$|[_\s-])/);
+    if (yearTok && semNo) academicYear = deriveAcademicYear(parseInt(yearTok[1], 10), semNo);
+  }
+  if (!academicYear) missing.push("Academic Year");
+
+  const type = isSummer
+    ? "Summer Semester"
+    : semNo && semNo % 2 === 1
+    ? "Odd Semester"
+    : "Even Semester";
+  const label = isSummer ? `Summer ${Math.max(1, Math.floor((semNo || 0) / 2))}` : `Semester ${semNo || ""}`;
+
+  return {
+    ok: missing.length === 0,
+    missing,
+    programme,
+    disciplineName: disc ? disc.name : null,
+    disciplineAcronym: disc ? disc.acronym : null,
+    semester: { no: semNo, type, label },
+    academicYear,
+  };
+}

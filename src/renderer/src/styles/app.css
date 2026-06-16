@@ -1,0 +1,109 @@
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background: #f6f7fb;
+}
+
+/* ── FUSION header (mirrors the Fusion-client top bar) ── */
+.fusion-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 10px 24px;
+  background: #ffffff;
+  border-bottom: 2px solid #111;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+}
+
+.fh-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-width: 0;
+}
+
+.fh-logo {
+  height: 46px;
+  width: auto;
+  flex: none;
+}
+
+.fh-insti {
+  min-width: 0;
+  padding-right: 16px;
+}
+
+.fh-insti-hi {
+  font-size: 13px;
+  font-weight: 700;
+  color: #111;
+  line-height: 1.3;
+}
+
+.fh-insti-hi sup {
+  font-size: 8px;
+  font-weight: 700;
+}
+
+.fh-insti-en {
+  font-size: 10.5px;
+  color: #5b6573;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.fh-brand {
+  border-left: 3px solid #15abff;
+  padding-left: 15px;
+  background: linear-gradient(90deg, rgba(21, 171, 255, 0.06) 0%, transparent 100%);
+  flex: none;
+}
+
+.fh-brand-top {
+  font-weight: 900;
+  letter-spacing: 1px;
+  color: #111;
+  font-size: 14px;
+}
+
+.fh-accent {
+  color: #15abff;
+  text-shadow: 0 0 10px rgba(21, 171, 255, 0.3);
+}
+
+.fh-brand-sub {
+  font-family: "SFMono-Regular", Menlo, Consolas, monospace;
+  font-weight: 800;
+  letter-spacing: 2px;
+  font-size: 11px;
+  color: #868e96;
+}
+
+.fh-date {
+  font-family: "SFMono-Regular", Menlo, Consolas, monospace;
+  font-weight: 800;
+  font-size: 12px;
+  color: #868e96;
+  flex: none;
+}
+
+/* ── content shell ── */
+.app-shell {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.card {
+  background: #fff;
+  border: 1px solid #e9ecef;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}

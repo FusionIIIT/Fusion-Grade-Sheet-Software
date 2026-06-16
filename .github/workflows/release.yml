@@ -1,0 +1,40 @@
+name: Release
+
+# Build installers for macOS, Windows and Linux and publish them to a GitHub
+# Release whenever a version tag (e.g. v1.0.1) is pushed. Download links in the
+# README point at /releases/latest, so they never need manual updating.
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch: # allows building manually from the Actions tab
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-latest, windows-latest, ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build renderer + main
+        run: npm run build
+
+      - name: Build and publish installers
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npx electron-builder --publish always

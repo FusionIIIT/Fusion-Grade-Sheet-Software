@@ -1,0 +1,45 @@
+{
+  "_comment": "Editable dropdown data. Programmes from BATCH_NAMES (programme_curriculum/models.py) + Constants.PROGRAMME. Disciplines are DB-driven in Fusion (no fixtures), so this is a sensible seed list you can extend. Add/edit freely; the app reads this on startup.",
+  "academicYears": [
+    "2023-24",
+    "2024-25",
+    "2025-26",
+    "2026-27"
+  ],
+  "programmes": [
+    "B.Tech",
+    "B.Des",
+    "M.Tech",
+    "M.Tech AI & ML",
+    "M.Tech Data Science",
+    "M.Tech Communication and Signal Processing",
+    "M.Tech Nanoelectronics and VLSI Design",
+    "M.Tech Power & Control",
+    "M.Tech Design",
+    "M.Tech CAD/CAM",
+    "M.Tech Manufacturing and Automation",
+    "M.Des",
+    "PhD"
+  ],
+  "disciplines": [
+    { "name": "Computer Science and Engineering", "acronym": "CSE" },
+    { "name": "Electronics and Communication Engineering", "acronym": "ECE" },
+    { "name": "Mechanical Engineering", "acronym": "ME" },
+    { "name": "Design", "acronym": "DES" },
+    { "name": "Smart Manufacturing", "acronym": "SM" }
+  ],
+  "semesters": [
+    { "no": 1, "type": "Odd Semester", "label": "Semester 1" },
+    { "no": 2, "type": "Even Semester", "label": "Semester 2" },
+    { "no": 3, "type": "Odd Semester", "label": "Semester 3" },
+    { "no": 4, "type": "Even Semester", "label": "Semester 4" },
+    { "no": 5, "type": "Odd Semester", "label": "Semester 5" },
+    { "no": 6, "type": "Even Semester", "label": "Semester 6" },
+    { "no": 7, "type": "Odd Semester", "label": "Semester 7" },
+    { "no": 8, "type": "Even Semester", "label": "Semester 8" },
+    { "no": 2, "type": "Summer Semester", "label": "Summer 1" },
+    { "no": 4, "type": "Summer Semester", "label": "Summer 2" },
+    { "no": 6, "type": "Summer Semester", "label": "Summer 3" },
+    { "no": 8, "type": "Summer Semester", "label": "Summer 4" }
+  ]
+}
