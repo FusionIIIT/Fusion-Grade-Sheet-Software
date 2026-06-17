@@ -1,5 +1,6 @@
 import * as XLSX from "xlsx";
 import { loadUnitsFromFile } from "../src/renderer/src/lib/loadWorkbook.js";
+import { mergeSemesterSheets } from "../src/renderer/src/lib/mergeSheets.js";
 
 const config = { disciplines: [{ name: "Smart Manufacturing", acronym: "SM" }] };
 
@@ -40,5 +41,19 @@ try {
 }
 assert(threw, "regular semester with 0 courses still errors");
 
+// A 0-course summer must NOT create a summer history entry (grid shows "-" not 0.0).
+const regUnit = {
+  meta: { programme: "B.Tech", disciplineName: "Smart Manufacturing", disciplineAcronym: "SM",
+    semester: { no: 8, type: "Even Semester", label: "Semester 8" }, academicYear: "2024-25" },
+  parsed: { courses: [{ code: "X", name: "X", credit: 20 }],
+    students: [{ rollNo: "21BSM010", name: "SUMMER STUDENT",
+      courses: [{ coursecode: "X", coursename: "X", credits: 20, grade: "A", special_symbol: "" }],
+      spi: "9.0", cpi: "8.0", su: 20, tu: 160 }] },
+};
+const { historyByRoll } = mergeSemesterSheets([regUnit, summer[0]]);
+const hist = historyByRoll["21BSM010"] || [];
+assert(hist.length === 1, `only regular entry kept, summer omitted (got ${hist.length})`);
+assert(!hist.some((h) => h.is_summer), "no summer history entry for 0-course summer");
+
 if (errors.length) { console.error(errors.join("\n")); process.exit(1); }
-console.log("SUMMER-EMPTY TEST PASS — 0-course summer loads; 0-course regular still errors.");
+console.log("SUMMER-EMPTY TEST PASS — 0-course summer loads, errors only for regular, and is omitted from the grid.");

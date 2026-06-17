@@ -30,6 +30,7 @@ export function mergeSemesterSheets(items) {
   for (const it of items) {
     const summer = isSummerType(it.meta.semester.type);
     for (const s of it.parsed.students) {
+      if (summer && (!s.courses || s.courses.length === 0)) continue;
       (historyByRoll[s.rollNo] ||= []).push({
         semester: it.meta.semester.no,
         spi: parseFloat(s.spi) || 0,
