@@ -56,6 +56,29 @@ Get the latest installer for your OS from the **[Releases page](https://github.c
 
 ---
 
+## 🗑️ Uninstall (complete removal)
+
+Each method removes the app **and** all of its hidden data (config, caches, logs).
+
+### Windows
+Open **Settings → Apps → Installed apps → Fusion Grade Sheet → Uninstall** (or use *Add or remove programs*). The uninstaller also clears the app's data automatically. To purge a portable copy or any leftovers, run [`uninstall/uninstall-windows.ps1`](uninstall/uninstall-windows.ps1):
+```powershell
+powershell -ExecutionPolicy Bypass -File uninstall-windows.ps1
+```
+
+### macOS
+macOS apps don't ship an uninstaller, so run the purge script (removes the `.app` plus all `~/Library` data):
+```bash
+bash uninstall/uninstall-macos.sh
+```
+
+### Linux
+```bash
+bash uninstall/uninstall-linux.sh "/path/to/Fusion Grade Sheet-<version>.AppImage"
+```
+
+> The scripts live in the [`uninstall/`](uninstall/) folder of this repo. They ask for confirmation, list every path they delete, and remove Application Support / Caches / Preferences / Saved State / logs / registry entries so nothing is left behind.
+
 ## How to use
 
 1. Open the app.

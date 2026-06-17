@@ -38,3 +38,22 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: npx electron-builder --publish always
+
+  # Attach the uninstall helper scripts to the release (after all installers are up).
+  uninstallers:
+    needs: release
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Upload uninstall scripts
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release upload "${GITHUB_REF_NAME}" \
+            uninstall/uninstall-macos.sh \
+            uninstall/uninstall-linux.sh \
+            uninstall/uninstall-windows.ps1 \
+            --clobber --repo "${GITHUB_REPOSITORY}"
