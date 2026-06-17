@@ -40,7 +40,7 @@ const PROGRAMME_KEYS = [
   ["PHD", "PhD"],
 ];
 
-const stripExt = (n) => String(n || "").replace(/\.[^.]+$/, "");
+const stripExt = (n) => String(n || "").replace(/\.(xlsx|xlsm|xls|csv)$/i, "");
 const alnum = (s) => String(s || "").toUpperCase().replace(/[^A-Z0-9]/g, "");
 
 function matchProgramme(progPart) {
@@ -133,34 +133,20 @@ export function parseFilename(filename, disciplines = []) {
   const disc = matchDiscipline(base, disciplines);
   if (!disc) missing.push("Discipline");
 
-  // ── Semester ──
-  const isSummer = /summer/i.test(base);
-  let semNo = null;
-  const semMatch =
-    base.match(/sem(?:ester)?[\s_]*?(\d+)/i) || base.match(/(?:^|[_\s-])S(\d+)(?:$|[_\s-])/i);
-  if (semMatch) semNo = parseInt(semMatch[1], 10);
-  if (!semNo) missing.push("Semester");
+  const sem = extractSemester(base);
+  if (!sem) missing.push("Semester");
+  const semNo = sem ? sem.no : null;
 
-  // ── Academic Year ──
   let academicYear = null;
   const explicit = base.match(/(\d{4})\s*-\s*(\d{2,4})/);
   if (explicit) {
-    const start = explicit[1];
     const end2 = explicit[2].length === 4 ? explicit[2].slice(2) : explicit[2].padStart(2, "0");
-    academicYear = `${start}-${end2}`;
-  } else {
-    // Fall back to a standalone batch year (not part of a range) and derive.
-    const yearTok = base.match(/(?:^|[_\s-])(20\d{2})(?:$|[_\s-])/);
-    if (yearTok && semNo) academicYear = deriveAcademicYear(parseInt(yearTok[1], 10), semNo);
+    academicYear = `${explicit[1]}-${end2}`;
+  } else if (semNo) {
+    const by = extractBatchYear(base);
+    if (by) academicYear = deriveAcademicYear(by, semNo);
   }
   if (!academicYear) missing.push("Academic Year");
-
-  const type = isSummer
-    ? "Summer Semester"
-    : semNo && semNo % 2 === 1
-    ? "Odd Semester"
-    : "Even Semester";
-  const label = isSummer ? `Summer ${Math.max(1, Math.floor((semNo || 0) / 2))}` : `Semester ${semNo || ""}`;
 
   return {
     ok: missing.length === 0,
@@ -168,7 +154,7 @@ export function parseFilename(filename, disciplines = []) {
     programme,
     disciplineName: disc ? disc.name : null,
     disciplineAcronym: disc ? disc.acronym : null,
-    semester: { no: semNo, type, label },
+    semester: sem || { no: null, type: null, label: null },
     academicYear,
   };
 }

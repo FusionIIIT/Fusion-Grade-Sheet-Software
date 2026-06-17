@@ -95,6 +95,8 @@ The app reads metadata from the file name. Use either format:
 |---|---|---|
 | **Compact** (recommended) | `BTech_CSE_Sem3_2024-25.xlsx` | B.Tech · CSE · Sem 3 · 2024-25 |
 | with specialization | `MTechAIML_CSE_Sem1_2025-26.xlsx` | M.Tech AI & ML · CSE · Sem 1 · 2025-26 |
+| **Summer term** | `BTech_SM_2021_Summer1_2021-22.xlsx` | B.Tech · SM · Summer 1 · 2021-22 |
+| **Multi-tab workbook** | `BTech_SM_2021_2021-22.xlsx` (tabs Sem1…Sem8, Summer1) | semester comes from each tab |
 | **Portal default name** | `B.Tech - Computer Science and Engineering CSE 2025_Semester 1.xlsx` | B.Tech · CSE · Sem 1 · 2025-26* |
 
 `<Programme>_<Discipline>_Sem<N>_<YYYY-YY>.xlsx`

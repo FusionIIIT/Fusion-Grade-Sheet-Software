@@ -25,6 +25,8 @@ const cases = [
   ["MTech_MT_Sem1_2025-26.xlsx", { programme: "M.Tech", disciplineAcronym: "MT", semNo: 1, year: "2025-26", type: "Odd Semester" }],
   ["BTech_SM_Sem5_2022-23.xlsx", { programme: "B.Tech", disciplineAcronym: "SM", semNo: 5, year: "2022-23", type: "Odd Semester" }],
   ["B.Tech - Mechanical Engineering ME 2024_Semester 3.xlsx", { programme: "B.Tech", disciplineAcronym: "ME", semNo: 3, year: "2025-26", type: "Odd Semester" }],
+  ["BTech_SM_2021_Summer1_2021-22.xlsx", { programme: "B.Tech", disciplineAcronym: "SM", semNo: 2, year: "2021-22", type: "Summer Semester" }],
+  ["BTech_SM_2021_Summer2_2022-23.xlsx", { programme: "B.Tech", disciplineAcronym: "SM", semNo: 4, year: "2022-23", type: "Summer Semester" }],
   ["B.Tech - Computer Science and Engineering CSE 2025_Semester 1.xlsx", { programme: "B.Tech", disciplineAcronym: "CSE", semNo: 1, year: "2025-26", type: "Odd Semester" }],
   ["M.Tech AI & ML - Electronics and Communication Engineering ECE 2025_Semester 1.xlsx", { programme: "M.Tech AI & ML", disciplineAcronym: "ECE", semNo: 1, year: "2025-26", type: "Odd Semester" }],
 ];
