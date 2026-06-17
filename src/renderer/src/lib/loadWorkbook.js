@@ -13,6 +13,8 @@ import * as XLSX from "xlsx";
 import { parseWorksheet } from "./parseApprovalSheet.js";
 import { parseFilename, extractSemester, extractBatchYear, deriveAcademicYear } from "./parseFilename.js";
 
+const isSummerSem = (s) => !!(s && s.type && s.type.toLowerCase().includes("summer"));
+
 const metaFrom = (m, semester, academicYear) => ({
   programme: m.programme,
   disciplineName: m.disciplineName,
@@ -39,7 +41,12 @@ export async function loadUnitsFromFile(file, config) {
           `Rename like  BTech_CSE_Sem3_2024-25.xlsx , or put each semester on its own tab (Sem1, Sem2, …).`
       );
     }
-    return [{ meta: metaFrom(fileMeta), parsed: parseWorksheet(wb.Sheets[names[0]]) }];
+    return [
+      {
+        meta: metaFrom(fileMeta),
+        parsed: parseWorksheet(wb.Sheets[names[0]], { allowNoCourses: isSummerSem(fileMeta.semester) }),
+      },
+    ];
   }
 
   // ── Multi-tab: one semester per tab ──
@@ -52,7 +59,10 @@ export async function loadUnitsFromFile(file, config) {
   const batchYear = extractBatchYear(file.name);
   const units = semTabs.map(({ name, sem }) => {
     const academicYear = batchYear ? deriveAcademicYear(batchYear, sem.no) : fileMeta.academicYear || "N/A";
-    return { meta: metaFrom(fileMeta, sem, academicYear), parsed: parseWorksheet(wb.Sheets[name]) };
+    return {
+      meta: metaFrom(fileMeta, sem, academicYear),
+      parsed: parseWorksheet(wb.Sheets[name], { allowNoCourses: isSummerSem(sem) }),
+    };
   });
   return units;
 }

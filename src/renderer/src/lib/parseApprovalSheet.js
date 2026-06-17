@@ -37,7 +37,7 @@ export function parseApprovalSheet(arrayBuffer) {
  * Parse a single SheetJS worksheet (one semester) into student records.
  * @returns {{ courses: {code,name,credit}[], students: object[] }}
  */
-export function parseWorksheet(ws) {
+export function parseWorksheet(ws, { allowNoCourses = false } = {}) {
   if (!ws) throw new Error("The file has no worksheet.");
 
   const rows = XLSX.utils.sheet_to_json(ws, { header: 1, raw: true, defval: null });
@@ -81,7 +81,7 @@ export function parseWorksheet(ws) {
       remarkCol: c + 1,
     });
   }
-  if (courses.length === 0) {
+  if (courses.length === 0 && !allowNoCourses) {
     throw new Error("No course columns found between column D and the SPI column.");
   }
 
