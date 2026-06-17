@@ -2,8 +2,7 @@ import { useState } from "react";
 import { Alert, Badge, FileInput, Group, Stack, Text, Title } from "@mantine/core";
 import { IconFileSpreadsheet, IconAlertTriangle, IconCircleCheck } from "@tabler/icons-react";
 import { showNotification } from "@mantine/notifications";
-import { parseApprovalSheet } from "../lib/parseApprovalSheet";
-import { parseFilename } from "../lib/parseFilename";
+import { loadAllUnits } from "../lib/loadWorkbook";
 import { programmeFullName } from "../lib/mappers";
 import { mergeSemesterSheets, validateSameBatch } from "../lib/mergeSheets";
 
@@ -21,21 +20,11 @@ export default function Uploader({ config, onLoaded, onReset }) {
     if (list.length === 0) return;
 
     try {
-      // 1) Parse each file's NAME + contents.
-      const items = [];
-      for (const f of list) {
-        const meta = parseFilename(f.name, config.disciplines);
-        if (!meta.ok) {
-          throw new Error(
-            `${f.name}: couldn't read ${meta.missing.join(", ")} from the filename. ` +
-              `Rename like  BTech_CSE_Sem3_2024-25.xlsx .`
-          );
-        }
-        const parsed = parseApprovalSheet(await f.arrayBuffer());
-        items.push({ meta, parsed });
-      }
+      // 1) Expand every file into semester units (handles single-tab files AND
+      //    multi-tab workbooks, or any mix).
+      const items = await loadAllUnits(list, config);
 
-      // 2) All files must be the same batch.
+      // 2) All units must be the same batch.
       const batchErr = validateSameBatch(items);
       if (batchErr) throw new Error(batchErr);
 
@@ -72,9 +61,9 @@ export default function Uploader({ config, onLoaded, onReset }) {
         Upload Approval Sheet
       </Title>
       <Text c="dimmed" size="sm" mb="lg">
-        Details are read from the file name. Upload <b>one</b> sheet for a single semester, or
-        <b> all of a batch&apos;s semester sheets together</b> to print final grade sheets with the
-        full semester-wise grid.
+        Details are read from the file name. Upload <b>one</b> sheet for a single semester. For the
+        final-year grid, give all the batch&apos;s semesters either as <b>multiple files at once</b> or
+        as <b>one workbook with a tab per semester</b> (tabs named Sem1, Sem2, … Summer1).
       </Text>
 
       <Stack gap="md">

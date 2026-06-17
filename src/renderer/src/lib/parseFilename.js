@@ -81,10 +81,38 @@ function matchDiscipline(base, disciplines) {
   return null;
 }
 
-function deriveAcademicYear(batchYear, semNo) {
+export function deriveAcademicYear(batchYear, semNo) {
   const start = batchYear + Math.floor((Math.max(1, semNo) - 1) / 2);
   const end = String((start + 1) % 100).padStart(2, "0");
   return `${start}-${end}`;
+}
+
+// Extract a semester from a free string — used for workbook TAB names like
+// "Sem1", "Semester 3", "Summer 1", "S5". For summer the portal numbers tabs
+// 1..4 onto even semesters 2,4,6,8 (matching academicConfig semesters).
+export function extractSemester(str) {
+  const s = String(str || "");
+  const isSummer = /summer/i.test(s);
+  const m =
+    s.match(/sem(?:ester)?[\s_-]*?(\d+)/i) ||
+    s.match(/summer[\s_-]*?(\d+)/i) ||
+    s.match(/(?:^|[_\s-])S(\d+)(?:$|[_\s-])/i);
+  if (!m) return null;
+  let no = parseInt(m[1], 10);
+  if (isSummer && no <= 4) no = no * 2; // Summer 1 → semester 2, etc.
+  if (!no) return null;
+  const type = isSummer ? "Summer Semester" : no % 2 === 1 ? "Odd Semester" : "Even Semester";
+  const label = isSummer ? `Summer ${Math.max(1, Math.floor(no / 2))}` : `Semester ${no}`;
+  return { no, type, label };
+}
+
+// Pull a batch admission year (or the start year of a YYYY-YY range) from a name.
+export function extractBatchYear(name) {
+  const base = stripExt(name);
+  const range = base.match(/(\d{4})\s*-\s*\d{2,4}/);
+  if (range) return parseInt(range[1], 10);
+  const y = base.match(/(?:^|[_\s-])(20\d{2})(?:$|[_\s-])/);
+  return y ? parseInt(y[1], 10) : null;
 }
 
 /**

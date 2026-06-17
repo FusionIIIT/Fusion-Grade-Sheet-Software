@@ -24,11 +24,20 @@ const norm = (v) => String(v ?? "").trim();
 
 /**
  * Parse an .xlsx / .csv approval sheet (as an ArrayBuffer) into student records.
+ * Reads the FIRST worksheet. For a specific worksheet use parseWorksheet().
  * @returns {{ courses: {code,name,credit}[], students: object[] }}
  */
 export function parseApprovalSheet(arrayBuffer) {
   const wb = XLSX.read(arrayBuffer, { type: "array" });
   const ws = wb.Sheets[wb.SheetNames[0]];
+  return parseWorksheet(ws);
+}
+
+/**
+ * Parse a single SheetJS worksheet (one semester) into student records.
+ * @returns {{ courses: {code,name,credit}[], students: object[] }}
+ */
+export function parseWorksheet(ws) {
   if (!ws) throw new Error("The file has no worksheet.");
 
   const rows = XLSX.utils.sheet_to_json(ws, { header: 1, raw: true, defval: null });
