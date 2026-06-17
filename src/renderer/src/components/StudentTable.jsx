@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { Badge, Button, Group, Table, Text, TextInput, Title, Tooltip } from "@mantine/core";
+import { Badge, Button, Group, SegmentedControl, Table, Text, TextInput, Title, Tooltip } from "@mantine/core";
 import { IconPrinter, IconDownload, IconEye, IconFileExport, IconSearch } from "@tabler/icons-react";
 import { showNotification } from "@mantine/notifications";
 import { buildStudentSheetHtml, buildCombinedSheetHtml, safeFileName } from "../lib/buildSheet";
@@ -12,20 +12,25 @@ export default function StudentTable({ parsed, metadata, historyByRoll = {} }) {
   const [exporting, setExporting] = useState(false);
   const [preview, setPreview] = useState({ open: false, html: "", title: "" });
   const [query, setQuery] = useState("");
+  const [spiFilter, setSpiFilter] = useState("active");
 
   const allStudents = parsed.students;
   const programmeLabel = metadata.programme;
 
-  // Search filters across roll number and name.
+  const isZeroSpi = (s) => parseFloat(s.spi) === 0;
+  const zeroCount = useMemo(() => allStudents.filter(isZeroSpi).length, [allStudents]);
+
+  // Filter by SPI bucket (0-SPI hidden by default) and by search text.
   const students = useMemo(() => {
     const q = query.trim().toLowerCase();
-    if (!q) return allStudents;
-    return allStudents.filter(
-      (s) =>
-        (s.rollNo || "").toLowerCase().includes(q) ||
-        (s.name || "").toLowerCase().includes(q)
-    );
-  }, [allStudents, query]);
+    return allStudents.filter((s) => {
+      if (spiFilter === "active" && isZeroSpi(s)) return false;
+      if (spiFilter === "zero" && !isZeroSpi(s)) return false;
+      if (q && !((s.rollNo || "").toLowerCase().includes(q) || (s.name || "").toLowerCase().includes(q)))
+        return false;
+      return true;
+    });
+  }, [allStudents, query, spiFilter]);
 
   const setRowBusy = (roll, v) => setBusy((p) => ({ ...p, [roll]: v }));
 
@@ -84,18 +89,28 @@ export default function StudentTable({ parsed, metadata, historyByRoll = {} }) {
 
   return (
     <div className="card" style={{ marginTop: 20 }}>
-      <Group justify="space-between" mb="md" wrap="nowrap">
+      <Group justify="space-between" mb="md" wrap="wrap" gap="sm">
         <Title order={4} style={{ whiteSpace: "nowrap" }}>
           Students ({students.length}
-          {query.trim() && students.length !== allStudents.length ? ` / ${allStudents.length}` : ""})
+          {students.length !== allStudents.length ? ` / ${allStudents.length}` : ""})
         </Title>
-        <Group gap="sm" wrap="nowrap" style={{ flex: 1, justifyContent: "flex-end" }}>
+        <Group gap="sm" wrap="wrap" style={{ flex: 1, justifyContent: "flex-end" }}>
+          <SegmentedControl
+            size="sm"
+            value={spiFilter}
+            onChange={setSpiFilter}
+            data={[
+              { label: "Active", value: "active" },
+              { label: "All", value: "all" },
+              { label: `0 SPI${zeroCount ? ` (${zeroCount})` : ""}`, value: "zero" },
+            ]}
+          />
           <TextInput
             placeholder="Search roll number or name…"
             leftSection={<IconSearch size={16} />}
             value={query}
             onChange={(e) => setQuery(e.currentTarget.value)}
-            style={{ width: 320, maxWidth: "50%" }}
+            style={{ width: 280, maxWidth: "45%" }}
           />
           <Button
             variant="light"
@@ -104,10 +119,15 @@ export default function StudentTable({ parsed, metadata, historyByRoll = {} }) {
             onClick={handleExportAll}
             loading={exporting}
           >
-            Export {query.trim() ? `(${students.length})` : "All"}
+            Export ({students.length})
           </Button>
         </Group>
       </Group>
+      {spiFilter === "active" && zeroCount > 0 && (
+        <Text size="xs" c="dimmed" mb="xs">
+          {zeroCount} student{zeroCount > 1 ? "s" : ""} with 0 SPI hidden — switch to “All” or “0 SPI” to view.
+        </Text>
+      )}
 
       <Table striped highlightOnHover withTableBorder>
         <Table.Thead>
@@ -124,7 +144,7 @@ export default function StudentTable({ parsed, metadata, historyByRoll = {} }) {
             <Table.Tr>
               <Table.Td colSpan={5}>
                 <Text c="dimmed" ta="center" py="md">
-                  No students match “{query}”.
+                  {query.trim() ? `No students match “${query}”.` : "No students to show for this filter."}
                 </Text>
               </Table.Td>
             </Table.Tr>

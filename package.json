@@ -1,6 +1,6 @@
 {
   "name": "fusion-grade-sheet",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "description": "Offline desktop app to generate IIITDM Jabalpur grade-sheet PDFs from an approval sheet",
   "author": "PDPM IIITDM Jabalpur",
   "license": "MIT",
