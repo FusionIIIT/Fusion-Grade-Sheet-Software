@@ -2,6 +2,17 @@
 import { buildPrintHTML, formatSemesterLabel } from "./gradeSheetTemplate.js";
 import { programmeFullName } from "./mappers.js";
 
+// "2025-26" → "2025-2026" (leaves an already-full "2025-2026" unchanged).
+function fullAcademicYear(ay) {
+  const m = String(ay || "").match(/^(\d{4})\s*-\s*(\d{2,4})$/);
+  if (!m) return ay;
+  const start = parseInt(m[1], 10);
+  if (m[2].length === 4) return `${m[1]}-${m[2]}`;
+  let end = Math.floor(start / 100) * 100 + parseInt(m[2], 10);
+  if (end <= start) end += 100;
+  return `${start}-${end}`;
+}
+
 /**
  * @param student   parsed row from parseApprovalSheet: { rollNo, name, courses[], spi, cpi }
  * @param metadata  { academicYear, programme, disciplineName, semester: {no, type, label} }
@@ -14,7 +25,7 @@ export function buildStudentSheetHtml(student, metadata, semesterHistory = []) {
     rollNumber: student.rollNo || "",
     programme: programmeFullName(programme),
     discipline: disciplineName || "N/A",
-    academicYear: academicYear || "N/A",
+    academicYear: academicYear ? fullAcademicYear(academicYear) : "N/A",
   };
 
   const semesterLabel = formatSemesterLabel(semester);

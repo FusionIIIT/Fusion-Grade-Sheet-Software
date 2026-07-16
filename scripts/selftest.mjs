@@ -83,7 +83,7 @@ const html = buildStudentSheetHtml(s, {
 writeFileSync(new URL("../selftest-output.html", import.meta.url), html);
 assert(html.includes("Bachelor of Technology"), "programme full name in HTML");
 assert(html.includes("Computer Science and Engineering"), "discipline in HTML");
-assert(html.includes("2025-26"), "academic year in HTML");
+assert(html.includes("2025-2026"), "academic year shown in full (2025-2026) in HTML");
 assert(html.includes("25BCS002"), "roll in HTML");
 assert(html.includes("Minimum Graduating CPI: 5.0"), "min CPI 5.0 (bachelor)");
 assert(html.includes("SPI &nbsp;&nbsp; 8.3"), "Result SPI 8.3 line");
