@@ -364,8 +364,8 @@ ${spiCpiTable}
 <tr>
   <td class="lbl" style="vertical-align:middle">Special Symbols</td>
   <td style="padding:3pt 5pt">
-    <b>&#8216;AU&#8217;</b>: Indicates that the course has been Audited<br>
-    <b>&#8216;CD&#8217;</b>: Indicates that the course has been Dropped due to a shortage of attendance<br>
+    <b>&#8216;AU&#8217;</b>: Indicates that the course has been audited<br>
+    <b>&#8216;CD&#8217;</b>: Indicates that the course has been dropped due to a shortage of attendance<br>
     <b>&#8216;R&#8217;</b> after letter grade indicates that the course has been repeated<br>
     <b>&#8216;S&#8217;</b> after letter grade indicates that the course has been substituted
   </td>
