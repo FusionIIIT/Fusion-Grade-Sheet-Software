@@ -8,7 +8,9 @@ files:
   - package.json
 asarUnpack:
   - resources/**
+afterPack: build/afterPack.cjs
 mac:
+  identity: null
   category: public.app-category.education
   target:
     - target: dmg

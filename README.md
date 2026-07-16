@@ -34,9 +34,9 @@ Get the latest installer for your OS from the **[Releases page](https://github.c
 ### macOS
 1. Download `Fusion Grade Sheet-<version>.dmg` (or `-arm64.dmg` for Apple Silicon).
 2. Open the `.dmg` and drag **Fusion Grade Sheet** into **Applications**.
-3. First launch (app isn't notarized yet): right-click the app → **Open** → **Open**, or run once in Terminal:
+3. First launch (app isn't notarized yet): right-click the app → **Open** → **Open**. If macOS says the app **"is damaged and can't be opened"** (common on Apple Silicon for unsigned apps), clear the download quarantine once in Terminal, then open it:
    ```bash
-   xattr -dr com.apple.quarantine "/Applications/Fusion Grade Sheet.app"
+   xattr -cr "/Applications/Fusion Grade Sheet.app"
    ```
 
 ### Windows

@@ -170,9 +170,9 @@ export function buildPrintHTML(studentInfo, courses, spi, cpi, semesterLabel, se
 <table id="spi-table">
 <colgroup><col style="width:20%"><col style="width:40%"><col style="width:40%"></colgroup>
 <tr>
-  <td class="lbl" style="text-align:center;border-right:hidden">Result</td>
-  <td style="text-align:center;font-size:var(--fs-sm);border-left:hidden">SPI &nbsp;&nbsp; ${Number(currentEntry.spi).toFixed(1)}</td>
-  <td style="text-align:center;font-size:var(--fs-sm)">CPI &nbsp;&nbsp; ${Number(currentEntry.cpi).toFixed(1)}</td>
+  <td class="lbl" style="text-align:left;border-right:hidden">Result</td>
+  <td style="text-align:center;font-size:var(--fs-sm);border-left:hidden;border-right:hidden">SPI &nbsp;&nbsp; ${Number(currentEntry.spi).toFixed(1)}</td>
+  <td style="text-align:center;font-size:var(--fs-sm);border-left:hidden">CPI &nbsp;&nbsp; ${Number(currentEntry.cpi).toFixed(1)}</td>
 </tr>
 </table>`;
   }
@@ -198,10 +198,13 @@ export function buildPrintHTML(studentInfo, courses, spi, cpi, semesterLabel, se
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
-    font-family: "Times New Roman", Times, serif;
+    font-family: "Arial MT", "ArialMT", Arial, Helvetica, sans-serif;
     font-size: var(--fs);
     color: #000;
     line-height: 1.25;
+  }
+  .lbl, th, b, strong, [style*="font-weight:bold"] {
+    font-family: Arial, "Arial MT", Helvetica, sans-serif;
   }
   table { width: 100%; border-collapse: collapse; table-layout: fixed; }
   td, th {
