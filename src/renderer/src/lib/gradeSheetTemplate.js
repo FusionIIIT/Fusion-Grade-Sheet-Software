@@ -318,24 +318,24 @@ ${spiCpiTable}
 <tr>
   <td class="lbl" style="vertical-align:middle">Grading Points</td>
   <td>
-    <table style="border-collapse:collapse;table-layout:auto;width:auto">
+    <table style="border-collapse:collapse;table-layout:auto;width:100%">
       <tr>
-        <td style="border:none;padding:0 14pt 1pt 0;font-size:var(--fs-xs);white-space:nowrap">O=10 (Distinguished),</td>
-        <td style="border:none;padding:0 14pt 1pt 0;font-size:var(--fs-xs);white-space:nowrap">A+=10 (Outstanding),</td>
-        <td style="border:none;padding:0 14pt 1pt 0;font-size:var(--fs-xs);white-space:nowrap">A=9 (Excellent),</td>
-        <td style="border:none;padding:0 14pt 1pt 0;font-size:var(--fs-xs);white-space:nowrap">B+=8 (Very Good),</td>
-        <td style="border:none;padding:0 0 1pt 0;font-size:var(--fs-xs);white-space:nowrap">B=7 (Good),</td>
+        <td style="border:none;padding:0 4pt 1pt 0;font-size:var(--fs-xs);white-space:nowrap">O=10 (Distinguished),</td>
+        <td style="border:none;padding:0 4pt 1pt 0;font-size:var(--fs-xs);white-space:nowrap">A+=10 (Outstanding),</td>
+        <td style="border:none;padding:0 4pt 1pt 0;font-size:var(--fs-xs);white-space:nowrap">A=9 (Excellent),</td>
+        <td style="border:none;padding:0 4pt 1pt 0;font-size:var(--fs-xs);white-space:nowrap">B+=8 (Very Good),</td>
+        <td style="border:none;padding:0;font-size:var(--fs-xs);white-space:nowrap">B=7 (Good),</td>
       </tr>
       <tr>
-        <td style="border:none;padding:0 14pt 1pt 0;font-size:var(--fs-xs);white-space:nowrap">C+=6 (Average),</td>
-        <td style="border:none;padding:0 14pt 1pt 0;font-size:var(--fs-xs);white-space:nowrap">C=5 (Below Average),</td>
-        <td style="border:none;padding:0 14pt 1pt 0;font-size:var(--fs-xs);white-space:nowrap">D+=4 (Marginal),</td>
-        <td style="border:none;padding:0 14pt 1pt 0;font-size:var(--fs-xs);white-space:nowrap">D=3 (Poor),</td>
-        <td style="border:none;padding:0 0 1pt 0;font-size:var(--fs-xs);white-space:nowrap">F=2 (Very Poor),</td>
+        <td style="border:none;padding:0 4pt 1pt 0;font-size:var(--fs-xs);white-space:nowrap">C+=6 (Average),</td>
+        <td style="border:none;padding:0 4pt 1pt 0;font-size:var(--fs-xs);white-space:nowrap">C=5 (Below Average),</td>
+        <td style="border:none;padding:0 4pt 1pt 0;font-size:var(--fs-xs);white-space:nowrap">D+=4 (Marginal),</td>
+        <td style="border:none;padding:0 4pt 1pt 0;font-size:var(--fs-xs);white-space:nowrap">D=3 (Poor),</td>
+        <td style="border:none;padding:0;font-size:var(--fs-xs);white-space:nowrap">F=2 (Very Poor),</td>
       </tr>
       <tr>
-        <td style="border:none;padding:0 14pt 0 0;font-size:var(--fs-xs);white-space:nowrap">I=0 (Incomplete),</td>
-        <td style="border:none;padding:0 14pt 0 0;font-size:var(--fs-xs);white-space:nowrap">S=0 (Satisfactory),</td>
+        <td style="border:none;padding:0 4pt 0 0;font-size:var(--fs-xs);white-space:nowrap">I=0 (Incomplete),</td>
+        <td style="border:none;padding:0 4pt 0 0;font-size:var(--fs-xs);white-space:nowrap">S=0 (Satisfactory),</td>
         <td style="border:none;padding:0;font-size:var(--fs-xs);white-space:nowrap">X=0 (Unsatisfactory)</td>
       </tr>
     </table>
