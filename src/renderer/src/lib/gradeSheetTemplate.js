@@ -16,13 +16,24 @@ const esc = (s) =>
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;");
 
+function toRoman(n) {
+  if (!n || n <= 0 || !isFinite(n)) return String(n ?? "");
+  const vals = [1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1];
+  const syms = ["M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I"];
+  let r = "", num = n;
+  for (let i = 0; i < vals.length; i++) {
+    while (num >= vals[i]) { r += syms[i]; num -= vals[i]; }
+  }
+  return r;
+}
+
 export function formatSemesterLabel(semester) {
   if (!semester) return "N/A";
   if (semester.type && semester.type.toLowerCase().includes("summer")) {
     const summerNo = Math.floor((semester.no || 0) / 2);
-    return summerNo > 0 ? `Summer ${summerNo}` : `Summer`;
+    return summerNo > 0 ? `Summer ${toRoman(summerNo)}` : `Summer`;
   }
-  return String(semester.no);
+  return toRoman(semester.no);
 }
 
 export function buildPrintHTML(studentInfo, courses, spi, cpi, semesterLabel, semesterHistory, selectedSemesterNo, selectedIsSummer) {
@@ -148,7 +159,7 @@ export function buildPrintHTML(studentInfo, courses, spi, cpi, semesterLabel, se
   <td style="text-align:center" rowspan="2">${finalCpi.toFixed(1)}</td>
 </tr>
 <tr>
-  <td class="lbl" style="border-right:none;border-top:hidden">CPI</td>
+  <td class="lbl" style="border-right:none">CPI</td>
   ${columns.map(c => `<td style="text-align:center">${c.cpi !== null ? Number(c.cpi).toFixed(1) : '-'}</td>`).join("")}
 </tr>
 </table>`;
@@ -160,8 +171,8 @@ export function buildPrintHTML(studentInfo, courses, spi, cpi, semesterLabel, se
 <colgroup><col style="width:20%"><col style="width:40%"><col style="width:40%"></colgroup>
 <tr>
   <td class="lbl" style="text-align:center;border-right:hidden">Result</td>
-  <td style="text-align:center;font-size:var(--fs-sm);border-left:hidden;border-right:hidden">SPI &nbsp;&nbsp; ${Number(currentEntry.spi).toFixed(1)}</td>
-  <td style="text-align:center;font-size:var(--fs-sm);border-left:hidden">CPI &nbsp;&nbsp; ${Number(currentEntry.cpi).toFixed(1)}</td>
+  <td style="text-align:center;font-size:var(--fs-sm);border-left:hidden">SPI &nbsp;&nbsp; ${Number(currentEntry.spi).toFixed(1)}</td>
+  <td style="text-align:center;font-size:var(--fs-sm)">CPI &nbsp;&nbsp; ${Number(currentEntry.cpi).toFixed(1)}</td>
 </tr>
 </table>`;
   }
@@ -209,7 +220,7 @@ export function buildPrintHTML(studentInfo, courses, spi, cpi, semesterLabel, se
   #info-table col.i2 { width: 40%; }
   #info-table col.i3 { width: 15%; }
   #info-table col.i4 { width: 30%; }
-  #info-table td { vertical-align: top; padding: 3pt 5pt; line-height: 1.3; font-size: var(--fs); }
+  #info-table td { vertical-align: top; padding: 3pt 5pt; line-height: 1.3; font-size: var(--fs); text-transform: uppercase; }
   #info-table .ir1 td { border-bottom: hidden; }
   #info-table .ir2 td { border-top: hidden; border-bottom: hidden; }
   #info-table .ir3 td { border-top: hidden; }
@@ -292,7 +303,7 @@ export function buildPrintHTML(studentInfo, courses, spi, cpi, semesterLabel, se
   <th style="text-align:left;border-left:hidden;border-right:hidden">Course Title</th>
   <th style="border-left:hidden;border-right:hidden">Unit</th>
   <th style="border-left:hidden;border-right:hidden">Grade</th>
-  <th style="border-left:hidden">Special Symbols</th>
+  <th style="border-left:hidden">Special Symbol</th>
 </tr>
 ${courseRows}
 </table>
@@ -309,22 +320,22 @@ ${spiCpiTable}
     <table style="width:100%;border-collapse:collapse;table-layout:fixed">
       <colgroup><col style="width:20%"><col style="width:20%"><col style="width:20%"><col style="width:20%"><col style="width:20%"></colgroup>
       <tr>
-        <td style="border:none;padding:0 0 1pt 0;font-size:var(--fs-xs)">O=10 (Distinguished)</td>
-        <td style="border:none;padding:0 0 1pt 0;font-size:var(--fs-xs)">A+=10 (Outstanding)</td>
-        <td style="border:none;padding:0 0 1pt 0;font-size:var(--fs-xs)">A=9 (Excellent)</td>
-        <td style="border:none;padding:0 0 1pt 0;font-size:var(--fs-xs)">B+=8 (Very Good)</td>
-        <td style="border:none;padding:0 0 1pt 0;font-size:var(--fs-xs)">B=7 (Good)</td>
+        <td style="border:none;padding:0 0 1pt 0;font-size:var(--fs-xs)">O=10 (Distinguished),</td>
+        <td style="border:none;padding:0 0 1pt 0;font-size:var(--fs-xs)">A+=10 (Outstanding),</td>
+        <td style="border:none;padding:0 0 1pt 0;font-size:var(--fs-xs)">A=9 (Excellent),</td>
+        <td style="border:none;padding:0 0 1pt 0;font-size:var(--fs-xs)">B+=8 (Very Good),</td>
+        <td style="border:none;padding:0 0 1pt 0;font-size:var(--fs-xs)">B=7 (Good),</td>
       </tr>
       <tr>
-        <td style="border:none;padding:0 0 1pt 0;font-size:var(--fs-xs)">C+=6 (Average)</td>
-        <td style="border:none;padding:0 0 1pt 0;font-size:var(--fs-xs)">C=5 (Below Average)</td>
-        <td style="border:none;padding:0 0 1pt 0;font-size:var(--fs-xs)">D+=4 (Marginal)</td>
-        <td style="border:none;padding:0 0 1pt 0;font-size:var(--fs-xs)">D=3 (Poor)</td>
-        <td style="border:none;padding:0 0 1pt 0;font-size:var(--fs-xs)">F=2 (Very Poor)</td>
+        <td style="border:none;padding:0 0 1pt 0;font-size:var(--fs-xs)">C+=6 (Average),</td>
+        <td style="border:none;padding:0 0 1pt 0;font-size:var(--fs-xs)">C=5 (Below Average),</td>
+        <td style="border:none;padding:0 0 1pt 0;font-size:var(--fs-xs)">D+=4 (Marginal),</td>
+        <td style="border:none;padding:0 0 1pt 0;font-size:var(--fs-xs)">D=3 (Poor),</td>
+        <td style="border:none;padding:0 0 1pt 0;font-size:var(--fs-xs)">F=2 (Very Poor),</td>
       </tr>
       <tr>
-        <td style="border:none;padding:0;font-size:var(--fs-xs)">I=0 (Incomplete)</td>
-        <td style="border:none;padding:0;font-size:var(--fs-xs)">S=0 (Satisfactory)</td>
+        <td style="border:none;padding:0;font-size:var(--fs-xs)">I=0 (Incomplete),</td>
+        <td style="border:none;padding:0;font-size:var(--fs-xs)">S=0 (Satisfactory),</td>
         <td style="border:none;padding:0;font-size:var(--fs-xs)">X=0 (Unsatisfactory)</td>
         <td style="border:none;padding:0;font-size:var(--fs-xs)"></td>
         <td style="border:none;padding:0;font-size:var(--fs-xs)"></td>
@@ -343,8 +354,6 @@ ${spiCpiTable}
   <td style="padding:3pt 5pt">
     <b>SPI</b>: Semester Performance Index<br>
     <b>CPI</b>: Cumulative Performance Index<br>
-    <b>AU</b>: Indicates that the course has been Audited<br>
-    <b>CD</b>: Indicates that the course has been Dropped due to a shortage of attendance
   </td>
 </tr>
 </table>
@@ -355,8 +364,10 @@ ${spiCpiTable}
 <tr>
   <td class="lbl" style="vertical-align:middle">Special Symbols</td>
   <td style="padding:3pt 5pt">
-    <b>&#8216;R&#8217;</b> after letter grade indicates that the course has been Repeated<br>
-    <b>&#8216;S&#8217;</b> after letter grade indicates that the course has been Substituted
+    <b>&#8216;AU&#8217;</b>: Indicates that the course has been Audited<br>
+    <b>&#8216;CD&#8217;</b>: Indicates that the course has been Dropped due to a shortage of attendance<br>
+    <b>&#8216;R&#8217;</b> after letter grade indicates that the course has been repeated<br>
+    <b>&#8216;S&#8217;</b> after letter grade indicates that the course has been substituted
   </td>
 </tr>
 </table>
@@ -365,7 +376,7 @@ ${spiCpiTable}
 <table id="legend-table" style="table-layout:auto;width:100%">
 <tr>
   <td style="font-size:8pt;padding:3pt 5pt;white-space:nowrap;width:auto;text-align:center;border-right:hidden">&#8226;&nbsp;Medium of Instruction is English</td>
-  <td style="font-size:8pt;padding:3pt 5pt;white-space:nowrap;width:auto;text-align:center;border-left:hidden">&#8226;&nbsp;Conversion from CPI to Percentage using (CPI&#215;10)%</td>
+  <td style="font-size:8pt;padding:3pt 5pt;white-space:nowrap;width:auto;text-align:center;border-left:hidden">&#8226;&nbsp;Conversion from CPI to Percentage using (CPI&#215;10)% formula</td>
 </tr>
 <tr>
   <td style="font-size:8pt;text-align:center;font-weight:bold;border-right:hidden">Minimum Graduating CPI: ${minCpi}</td>
