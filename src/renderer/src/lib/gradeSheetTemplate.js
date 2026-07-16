@@ -216,11 +216,9 @@ export function buildPrintHTML(studentInfo, courses, spi, cpi, semesterLabel, se
   .lbl { font-weight: bold; }
 
   /*  INFO TABLE  */
-  #info-table col.i1 { width: 15%; }
-  #info-table col.i2 { width: 40%; }
-  #info-table col.i3 { width: 15%; }
-  #info-table col.i4 { width: 30%; }
+  #info-table { table-layout: auto; }
   #info-table td { vertical-align: top; padding: 3pt 5pt; line-height: 1.3; font-size: var(--fs); text-transform: uppercase; }
+  #info-table .lbl { white-space: nowrap; width: 1%; }
   #info-table .ir1 td { border-bottom: hidden; }
   #info-table .ir2 td { border-top: hidden; border-bottom: hidden; }
   #info-table .ir3 td { border-top: hidden; }
@@ -364,8 +362,8 @@ ${spiCpiTable}
 <tr>
   <td class="lbl" style="vertical-align:middle">Special Symbols</td>
   <td style="padding:3pt 5pt">
-    <b>&#8216;AU&#8217;</b>: Indicates that the course has been audited<br>
-    <b>&#8216;CD&#8217;</b>: Indicates that the course has been dropped due to a shortage of attendance<br>
+    <b>&#8216;AU&#8217;</b> indicates that the course has been audited<br>
+    <b>&#8216;CD&#8217;</b> indicates that the course has been dropped due to a shortage of attendance<br>
     <b>&#8216;R&#8217;</b> after letter grade indicates that the course has been repeated<br>
     <b>&#8216;S&#8217;</b> after letter grade indicates that the course has been substituted
   </td>
@@ -376,7 +374,7 @@ ${spiCpiTable}
 <table id="legend-table" style="table-layout:auto;width:100%">
 <tr>
   <td style="font-size:8pt;padding:3pt 5pt;white-space:nowrap;width:auto;text-align:center;border-right:hidden">&#8226;&nbsp;Medium of Instruction is English</td>
-  <td style="font-size:8pt;padding:3pt 5pt;white-space:nowrap;width:auto;text-align:center;border-left:hidden">&#8226;&nbsp;Conversion from CPI to Percentage using (CPI&#215;10)% formula</td>
+  <td style="font-size:8pt;padding:3pt 5pt;white-space:nowrap;width:auto;text-align:center;border-left:hidden">&#8226;&nbsp;Conversion from CPI to Percentage using (CPI&#215;10)% formula.</td>
 </tr>
 <tr>
   <td style="font-size:8pt;text-align:center;font-weight:bold;border-right:hidden">Minimum Graduating CPI: ${minCpi}</td>
