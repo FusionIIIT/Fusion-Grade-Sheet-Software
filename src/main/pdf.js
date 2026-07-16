@@ -11,10 +11,29 @@
 //     (= A4 content width, 164mm ≈ 620px @96dpi).
 // ─────────────────────────────────────────────────────────────────────────────
 
-import { BrowserWindow } from "electron";
+import { BrowserWindow, app } from "electron";
+import { writeFile, unlink } from "fs/promises";
+import path from "path";
 
 // A4 content width (210mm - 2*2.3cm margins = 164mm ≈ 620px at 96dpi).
 const CONTENT_W_PX = 620;
+
+// Load HTML by writing it to a temp file and loadFile()'ing it, instead of a
+// data: URL. data: URLs are length-capped by Chromium (~2MB on Windows), so a
+// large "Export All" combined document silently failed to load. A temp file has
+// no size limit and works identically on every OS. Returns the temp path so the
+// caller can delete it.
+let tmpCounter = 0;
+async function loadHtml(win, html) {
+  const file = path.join(app.getPath("temp"), `fgs-${process.pid}-${tmpCounter++}.html`);
+  await writeFile(file, html, "utf-8");
+  await win.loadFile(file);
+  return file;
+}
+
+async function cleanup(file) {
+  if (file) { try { await unlink(file); } catch { /* ignore */ } }
+}
 
 // Same auto-shrink the portal applies before printing (gradeSheet.jsx:618-628).
 const SHRINK_SCRIPT = `
@@ -44,9 +63,9 @@ export async function renderPdf(html, { shrink = true } = {}) {
     webPreferences: { offscreen: false, sandbox: true },
   });
 
+  let file;
   try {
-    const dataUrl = "data:text/html;charset=utf-8," + encodeURIComponent(html);
-    await win.loadURL(dataUrl);
+    file = await loadHtml(win, html);
     await waitForReady(win);
     // The font auto-shrink only makes sense for a single-page sheet. For the
     // combined multi-page export it would shrink every page, so skip it there.
@@ -60,6 +79,7 @@ export async function renderPdf(html, { shrink = true } = {}) {
     return pdf;
   } finally {
     if (!win.isDestroyed()) win.destroy();
+    await cleanup(file);
   }
 }
 
@@ -86,8 +106,7 @@ export async function printHtml(html) {
     webPreferences: { offscreen: false, sandbox: true },
   });
 
-  const dataUrl = "data:text/html;charset=utf-8," + encodeURIComponent(html);
-  await win.loadURL(dataUrl);
+  const file = await loadHtml(win, html);
   await waitForReady(win);
   await win.webContents.executeJavaScript(SHRINK_SCRIPT, true);
 
@@ -96,6 +115,7 @@ export async function printHtml(html) {
       { silent: false, printBackground: true },
       (success, failureReason) => {
         if (!win.isDestroyed()) win.destroy();
+        cleanup(file);
         resolve({ ok: success, reason: failureReason });
       }
     );
