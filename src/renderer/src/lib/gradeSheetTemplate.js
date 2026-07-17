@@ -64,7 +64,7 @@ export function buildPrintHTML(studentInfo, courses, spi, cpi, semesterLabel, se
       <td style="text-align:center;vertical-align:middle;border-right:hidden;${topHide}">${esc(code)}</td>
       <td style="vertical-align:middle;border-left:hidden;border-right:hidden;${topHide}">${esc(c.coursename)}</td>
       <td style="text-align:center;vertical-align:middle;border-left:hidden;border-right:hidden;${topHide}">${esc(c.credits)}</td>
-      <td style="text-align:center;vertical-align:middle;border-left:hidden;border-right:hidden;${topHide}">${esc(c.grade)}</td>
+      <td style="text-align:left;vertical-align:middle;border-left:hidden;border-right:hidden;${topHide}">${esc(c.grade)}</td>
       <td style="text-align:center;vertical-align:middle;border-left:hidden;${topHide}">${esc(c.special_symbol || "")}</td>
     </tr>`;
     })
@@ -219,9 +219,13 @@ export function buildPrintHTML(studentInfo, courses, spi, cpi, semesterLabel, se
   .lbl { font-weight: bold; }
 
   /*  INFO TABLE  */
-  #info-table { table-layout: auto; }
+  #info-table { table-layout: fixed; }
+  #info-table col.i1 { width: 16%; }
+  #info-table col.i2 { width: 37%; }
+  #info-table col.i3 { width: 18%; }
+  #info-table col.i4 { width: 29%; }
   #info-table td { vertical-align: top; padding: 3pt 5pt; line-height: 1.3; font-size: var(--fs); text-transform: uppercase; }
-  #info-table .lbl { white-space: nowrap; width: 1%; }
+  #info-table .lbl { white-space: nowrap; }
   #info-table .ir1 td { border-bottom: hidden; }
   #info-table .ir2 td { border-top: hidden; border-bottom: hidden; }
   #info-table .ir3 td { border-top: hidden; }
@@ -303,7 +307,7 @@ export function buildPrintHTML(studentInfo, courses, spi, cpi, semesterLabel, se
   <th style="border-right:hidden">Course No.</th>
   <th style="text-align:left;border-left:hidden;border-right:hidden">Course Title</th>
   <th style="border-left:hidden;border-right:hidden">Unit</th>
-  <th style="border-left:hidden;border-right:hidden">Grade</th>
+  <th style="text-align:left;border-left:hidden;border-right:hidden">Grade</th>
   <th style="border-left:hidden">Special Symbol</th>
 </tr>
 ${courseRows}
