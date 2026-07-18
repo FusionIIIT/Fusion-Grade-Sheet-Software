@@ -219,10 +219,13 @@ export function buildPrintHTML(studentInfo, courses, spi, cpi, semesterLabel, se
   .lbl { font-weight: bold; }
 
   /*  INFO TABLE  */
-  #info-table { table-layout: auto; }
+  #info-table { table-layout: fixed; }
+  #info-table col.i1 { width: 2.7cm; }
+  #info-table col.i2 { width: 4.3cm; }
+  #info-table col.i3 { width: 2.9cm; }
+  #info-table col.i4 { width: 6.5cm; }
   #info-table td { vertical-align: top; padding: 3pt 5pt; line-height: 1.3; font-size: var(--fs); text-transform: uppercase; }
-  #info-table .lbl { white-space: nowrap; width: 1%; }
-  #info-table td:nth-child(2) { white-space: nowrap; width: 1%; }
+  #info-table .lbl { white-space: nowrap; }
   #info-table .ir1 td { border-bottom: hidden; }
   #info-table .ir2 td { border-top: hidden; border-bottom: hidden; }
   #info-table .ir3 td { border-top: hidden; }
