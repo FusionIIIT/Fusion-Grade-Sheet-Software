@@ -6,8 +6,11 @@ import { buildStudentSheetHtml, buildCombinedSheetHtml, safeFileName } from "../
 import { computeSpi } from "../lib/gradeData";
 import PreviewModal from "./PreviewModal";
 
-export default function StudentTable({ parsed, metadata, historyByRoll = {} }) {
+export default function StudentTable({ parsed, metadata, historyByRoll = {}, metaByRoll = {} }) {
   const histOf = (s) => historyByRoll[s.rollNo] || [];
+  // Every sheet carries the metadata of that student's own final term.
+  const metaOf = (s) => metaByRoll[s.rollNo] || metadata;
+  const perStudentSemester = Object.keys(metaByRoll).length > 0;
   const [busy, setBusy] = useState({});
   const [exporting, setExporting] = useState(false);
   const [preview, setPreview] = useState({ open: false, html: "", title: "" });
@@ -35,14 +38,14 @@ export default function StudentTable({ parsed, metadata, historyByRoll = {} }) {
   const setRowBusy = (roll, v) => setBusy((p) => ({ ...p, [roll]: v }));
 
   const handlePreview = (student) => {
-    const html = buildStudentSheetHtml(student, metadata, histOf(student));
+    const html = buildStudentSheetHtml(student, metaOf(student), histOf(student));
     setPreview({ open: true, html, title: `Preview — ${student.rollNo}` });
   };
 
   const handleDownload = async (student) => {
     setRowBusy(student.rollNo, "download");
     try {
-      const html = buildStudentSheetHtml(student, metadata, histOf(student));
+      const html = buildStudentSheetHtml(student, metaOf(student), histOf(student));
       const res = await window.api.savePdf(html, safeFileName(student.rollNo));
       if (res.ok)
         showNotification({ color: "green", title: "Saved", message: res.path });
@@ -56,7 +59,7 @@ export default function StudentTable({ parsed, metadata, historyByRoll = {} }) {
   const handlePrint = async (student) => {
     setRowBusy(student.rollNo, "print");
     try {
-      const html = buildStudentSheetHtml(student, metadata, histOf(student));
+      const html = buildStudentSheetHtml(student, metaOf(student), histOf(student));
       const res = await window.api.printPdf(html);
       if (!res.ok && res.reason)
         showNotification({ color: "yellow", title: "Print", message: res.reason });
@@ -71,8 +74,10 @@ export default function StudentTable({ parsed, metadata, historyByRoll = {} }) {
     setExporting(true);
     try {
       // One combined document → a single fast render pass in the main process.
-      const combinedHtml = buildCombinedSheetHtml(students, metadata, historyByRoll);
-      const name = `grade_sheets_${metadata.disciplineAcronym || "all"}_sem${metadata.semester.no}.pdf`;
+      const combinedHtml = buildCombinedSheetHtml(students, metadata, historyByRoll, metaByRoll);
+      const name = perStudentSemester
+        ? `grade_sheets_${metadata.disciplineAcronym || "all"}_final.pdf`
+        : `grade_sheets_${metadata.disciplineAcronym || "all"}_sem${metadata.semester.no}.pdf`;
       const res = await window.api.exportAll(combinedHtml, students.length, name);
       if (res.ok)
         showNotification({
@@ -134,6 +139,7 @@ export default function StudentTable({ parsed, metadata, historyByRoll = {} }) {
           <Table.Tr>
             <Table.Th>Roll Number</Table.Th>
             <Table.Th>Programme</Table.Th>
+            {perStudentSemester && <Table.Th>Final Term</Table.Th>}
             <Table.Th>Courses</Table.Th>
             <Table.Th>SPI / CPI</Table.Th>
             <Table.Th style={{ textAlign: "right" }}>Actions</Table.Th>
@@ -142,7 +148,7 @@ export default function StudentTable({ parsed, metadata, historyByRoll = {} }) {
         <Table.Tbody>
           {students.length === 0 && (
             <Table.Tr>
-              <Table.Td colSpan={5}>
+              <Table.Td colSpan={perStudentSemester ? 6 : 5}>
                 <Text c="dimmed" ta="center" py="md">
                   {query.trim() ? `No students match “${query}”.` : "No students to show for this filter."}
                 </Text>
@@ -162,6 +168,7 @@ export default function StudentTable({ parsed, metadata, historyByRoll = {} }) {
                   </Text>
                 </Table.Td>
                 <Table.Td>{programmeLabel}</Table.Td>
+                {perStudentSemester && <Table.Td>{metaOf(s).semester?.label || "—"}</Table.Td>}
                 <Table.Td>{s.courses.length}</Table.Td>
                 <Table.Td>
                   <Group gap={6}>

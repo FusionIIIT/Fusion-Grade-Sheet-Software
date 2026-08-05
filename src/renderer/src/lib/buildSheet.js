@@ -55,12 +55,14 @@ export function safeFileName(rollNo) {
 // offscreen window per student. The per-student CSS is identical, so we take the
 // <style> from the first sheet and concatenate each <body> inner inside a
 // page-breaking wrapper.
-export function buildCombinedSheetHtml(students, metadata, historyByRoll = {}) {
+export function buildCombinedSheetHtml(students, metadata, historyByRoll = {}, metaByRoll = {}) {
   if (!students.length) return "<!doctype html><html><body></body></html>";
 
   const histOf = (s) => historyByRoll[s.rollNo] || [];
+  // Each student's sheet is stamped with their own final term, not a batch-wide one.
+  const metaOf = (s) => metaByRoll[s.rollNo] || metadata;
 
-  const first = buildStudentSheetHtml(students[0], metadata, histOf(students[0]));
+  const first = buildStudentSheetHtml(students[0], metaOf(students[0]), histOf(students[0]));
   const styleMatch = first.match(/<style>([\s\S]*?)<\/style>/i);
   const css = styleMatch ? styleMatch[1] : "";
 
@@ -70,7 +72,7 @@ export function buildCombinedSheetHtml(students, metadata, historyByRoll = {}) {
   };
 
   const pages = students
-    .map((s) => `<div class="gs-page">${bodyInner(buildStudentSheetHtml(s, metadata, histOf(s)))}</div>`)
+    .map((s) => `<div class="gs-page">${bodyInner(buildStudentSheetHtml(s, metaOf(s), histOf(s)))}</div>`)
     .join("\n");
 
   return `<!DOCTYPE html>

@@ -28,8 +28,9 @@ export default function Uploader({ config, onLoaded, onReset }) {
       const batchErr = validateSameBatch(items);
       if (batchErr) throw new Error(batchErr);
 
-      // 3) Merge → target (latest) sheet + per-roll semester history.
-      const { target, historyByRoll, semesters, multi } = mergeSemesterSheets(items);
+      // 3) Merge → one row per student at their final term + per-roll history.
+      const { target, students, metaByRoll, historyByRoll, semesters, multi } =
+        mergeSemesterSheets(items);
       const m = target.meta;
       const metadata = {
         academicYear: m.academicYear,
@@ -40,14 +41,14 @@ export default function Uploader({ config, onLoaded, onReset }) {
       };
 
       setDetected({ metadata, semesters, multi, count: items.length });
-      onLoaded(target.parsed, metadata, historyByRoll);
+      onLoaded({ ...target.parsed, students }, metadata, historyByRoll, metaByRoll);
 
       showNotification({
         color: "green",
         title: multi ? `${items.length} sheets merged` : "Sheet loaded",
         message: multi
-          ? `${target.parsed.students.length} students • generating ${m.semester.label} with full history`
-          : `${target.parsed.students.length} students • ${target.parsed.courses.length} courses`,
+          ? `${students.length} students • each sheet built from their last registered term`
+          : `${students.length} students • ${target.parsed.courses.length} courses`,
       });
     } catch (err) {
       setError(err.message || String(err));
@@ -87,14 +88,16 @@ export default function Uploader({ config, onLoaded, onReset }) {
               {detected.metadata.disciplineName} ({detected.metadata.disciplineAcronym})
             </Badge>
             <Badge size="lg" variant="light" color="teal">
-              {detected.metadata.semester.label}
+              {detected.multi
+                ? `${detected.semesters[0].label} → ${detected.semesters[detected.semesters.length - 1].label}`
+                : detected.metadata.semester.label}
             </Badge>
             <Badge size="lg" variant="light" color="orange">
               {detected.metadata.academicYear}
             </Badge>
             {detected.multi && (
               <Badge size="lg" variant="filled" color="indigo">
-                {detected.count} semesters → full grid
+                {detected.count} semesters → final-term grid
               </Badge>
             )}
           </Group>

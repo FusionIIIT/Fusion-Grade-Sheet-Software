@@ -40,6 +40,7 @@ export default function App() {
   const [parsed, setParsed] = useState(null);
   const [metadata, setMetadata] = useState(null);
   const [historyByRoll, setHistoryByRoll] = useState({});
+  const [metaByRoll, setMetaByRoll] = useState({});
 
   useEffect(() => {
     let active = true;
@@ -64,15 +65,22 @@ export default function App() {
             setParsed(null);
             setMetadata(null);
             setHistoryByRoll({});
+            setMetaByRoll({});
           }}
-          onLoaded={(p, m, history) => {
+          onLoaded={(p, m, history, perRollMeta) => {
             setParsed(p);
             setMetadata(m);
             setHistoryByRoll(history || {});
+            setMetaByRoll(perRollMeta || {});
           }}
         />
         {parsed && metadata && (
-          <StudentTable parsed={parsed} metadata={metadata} historyByRoll={historyByRoll} />
+          <StudentTable
+            parsed={parsed}
+            metadata={metadata}
+            historyByRoll={historyByRoll}
+            metaByRoll={metaByRoll}
+          />
         )}
       </div>
     </div>
