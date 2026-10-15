@@ -19,23 +19,28 @@ const courses = [
 // 25BCS002 grades from image 3.
 const grades = ["A", "B+", "B+", "A", "B", "S"];
 
-// Build the worksheet exactly like views.py:1338-1553 (AOA + merges).
+// Build the worksheet exactly like views.py:1338-1553 (AOA + merges): dynamic
+// heading on row 1, header block on rows 2-6 (S.No/Roll No/Name + trailing
+// SPI/CPI/... on row 2, course code/name/credit/grade-remarks on rows 3-6).
 const aoa = [];
+const heading = ["Approval sheet for Odd Semester AY2025-2026 (UG2025 Batch (CSE)) - SEM-1st"];
 const row1 = ["S. No", "Roll No", "Name"];
 const row2 = ["", "", ""];
 const row3 = ["", "", ""];
 const row4 = ["", "", ""];
-courses.forEach((c) => {
-  row1.push(c.code, null);
-  row2.push(c.name, null);
-  row3.push(c.credit, null);
-  row4.push("Grade", "Remarks");
+const row5 = ["", "", ""];
+courses.forEach((c, i) => {
+  row1.push(i + 1, null);
+  row2.push(c.code, null);
+  row3.push(c.name, null);
+  row4.push(c.credit, null);
+  row5.push("Grade", "Remarks");
 });
 ["SPI", "CPI", "SU", "TU", "SP", "TP", "WARNING"].forEach((h) => {
   row1.push(h);
-  row2.push(null); row3.push(null); row4.push(null);
+  row2.push(null); row3.push(null); row4.push(null); row5.push(null);
 });
-aoa.push(row1, row2, row3, row4);
+aoa.push(heading, row1, row2, row3, row4, row5);
 
 // One data row for 25BCS002.
 const dataRow = [1, "25BCS002", "AATISH KUMAR"];

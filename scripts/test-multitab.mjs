@@ -9,7 +9,9 @@ const config = { disciplines: [{ name: "Smart Manufacturing", acronym: "SM" }] }
 // Minimal approval-sheet AOA for one course + one student, with cumulative TU.
 function sheetAOA(spi, cpi, tu) {
   return [
-    ["S. No", "Roll No", "Name", "CS4001", null, "SPI", "CPI", "SU", "TU", "SP", "TP", "WARNING"],
+    ["Approval sheet for Odd Semester AY2021-2022 (UG2021 Batch (SM)) - SEM-1st"],
+    ["S. No", "Roll No", "Name", 1, null, "SPI", "CPI", "SU", "TU", "SP", "TP", "WARNING"],
+    ["", "", "", "CS4001", null, null, null, null, null, null, null, null],
     ["", "", "", "Capstone", null, null, null, null, null, null, null, null],
     ["", "", "", 20, null, null, null, null, null, null, null, null],
     ["", "", "", "Grade", "Remarks", null, null, null, null, null, null, null],

@@ -6,7 +6,9 @@ const config = { disciplines: [{ name: "Smart Manufacturing", acronym: "SM" }] }
 
 function zeroCourseAOA() {
   return [
+    ["Approval sheet for Summer Semester AY2021-2022 (UG2021 Batch (SM)) - SUMMER-1"],
     ["S. No", "Roll No", "Name", "SPI", "CPI", "SU", "TU", "SP", "TP", "WARNING"],
+    [null, null, null, null, null, null, null, null, null, null],
     [null, null, null, null, null, null, null, null, null, null],
     [null, null, null, null, null, null, null, null, null, null],
     [null, null, null, null, null, null, null, null, null, null],
