@@ -50,6 +50,21 @@ export function safeFileName(rollNo) {
   return `${safe}_grade_sheet.pdf`;
 }
 
+// Filename for the "Export All" combined PDF. A summer semester shares its "no"
+// with the even semester it follows (Summer 1 → no: 2, same as Semester 2), so
+// the tag must disambiguate by type — otherwise exporting one silently
+// overwrites the other's file on disk.
+export function exportAllFileName(metadata, { perStudentSemester = false } = {}) {
+  const disc = metadata.disciplineAcronym || "all";
+  if (perStudentSemester) return `grade_sheets_${disc}_final.pdf`;
+
+  const isSummer = !!metadata.semester?.type?.toLowerCase().includes("summer");
+  const semTag = isSummer
+    ? `Summer${Math.max(1, Math.floor((metadata.semester.no || 0) / 2))}`
+    : `Sem${metadata.semester.no}`;
+  return `grade_sheets_${disc}_${semTag}.pdf`;
+}
+
 // Build ONE document containing every student's sheet, each on its own page.
 // This lets Export All render in a single printToPDF pass (fast) instead of one
 // offscreen window per student. The per-student CSS is identical, so we take the

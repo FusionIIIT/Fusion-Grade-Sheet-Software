@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { Badge, Button, Group, SegmentedControl, Table, Text, TextInput, Title, Tooltip } from "@mantine/core";
 import { IconPrinter, IconDownload, IconEye, IconFileExport, IconSearch } from "@tabler/icons-react";
 import { showNotification } from "@mantine/notifications";
-import { buildStudentSheetHtml, buildCombinedSheetHtml, safeFileName } from "../lib/buildSheet";
+import { buildStudentSheetHtml, buildCombinedSheetHtml, safeFileName, exportAllFileName } from "../lib/buildSheet";
 import { computeSpi } from "../lib/gradeData";
 import PreviewModal from "./PreviewModal";
 
@@ -75,9 +75,7 @@ export default function StudentTable({ parsed, metadata, historyByRoll = {}, met
     try {
       // One combined document → a single fast render pass in the main process.
       const combinedHtml = buildCombinedSheetHtml(students, metadata, historyByRoll, metaByRoll);
-      const name = perStudentSemester
-        ? `grade_sheets_${metadata.disciplineAcronym || "all"}_final.pdf`
-        : `grade_sheets_${metadata.disciplineAcronym || "all"}_sem${metadata.semester.no}.pdf`;
+      const name = exportAllFileName(metadata, { perStudentSemester });
       const res = await window.api.exportAll(combinedHtml, students.length, name);
       if (res.ok)
         showNotification({
